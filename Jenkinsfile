@@ -32,5 +32,10 @@ pipeline{
                sh 'echo deploytodev'
             }
         }
+
+         environment {
+        SONAR_HOST_URL = 'http://<docker-host-ip>:9000'
+        SONAR_AUTH_TOKEN = credentials('sonarqube-token-id')
+    }
     }
 }
