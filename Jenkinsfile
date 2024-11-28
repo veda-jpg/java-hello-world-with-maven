@@ -17,5 +17,20 @@ pipeline{
                sh 'mvn package'
             }
         }
+             stage('sonarqualitycheck'){
+            steps{
+               sh 'echo sonarqualitycheck'
+            }
+        }
+             stage('pushartifactorytonexus'){
+            steps{
+               sh 'echo pushtonexus'
+            }
+        }
+                  stage('deploytodevenv'){
+            steps{
+               sh 'echo deploytodev'
+            }
+        }
     }
 }
