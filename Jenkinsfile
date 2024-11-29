@@ -6,6 +6,11 @@ pipeline{
          jdk 'java17'
     }
 
+   environment {
+        SONAR_HOST_URL = 'http://3.110.219.140:9000'
+        SONAR_AUTH_TOKEN = credentials('sonarqube-token-id')
+    }
+
     stages{
         stage('checkout'){
             steps{
@@ -33,9 +38,5 @@ pipeline{
             }
         }
 
-         environment {
-        SONAR_HOST_URL = 'http://http://3.110.219.140/:9000'
-        SONAR_AUTH_TOKEN = credentials('squ_0ba0eb2c587dd16c9558c060b0e81efeb64c307')
-    }
     }
 }
