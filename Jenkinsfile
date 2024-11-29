@@ -12,6 +12,12 @@ pipeline{
     }
 
     stages{
+stage('Clean Workspace') {
+    steps {
+        cleanWs()
+    }
+}
+
         stage('checkout'){
             steps{
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'github access', url: 'https://github.com/veda-jpg/java-hello-world-with-maven.git']]])
