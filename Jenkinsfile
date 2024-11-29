@@ -28,6 +28,7 @@ pipeline{
                     sh 'mvn sonar:sonar -Dsonar.projectKey=java-hello-world-with-maven'
             }
         }
+             }
              stage('pushartifactorytonexus'){
             steps{
                sh 'echo pushtonexus'
