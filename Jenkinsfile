@@ -24,7 +24,8 @@ pipeline{
         }
              stage('sonarqualitycheck'){
             steps{
-               sh 'echo sonarqualitycheck'
+              withSonarQubeEnv('SonarQube') { // SonarQube server name in Jenkins
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=java-hello-world-with-maven'
             }
         }
              stage('pushartifactorytonexus'){
