@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     tools {
-        maven 'maven39'
-        jdk 'java17'
+        maven 'maven39' // Ensure Maven 3.9 is configured in Jenkins
+        jdk 'java17'    // Ensure Java 17 is configured in Jenkins
     }
 
     environment {
         SONAR_HOST_URL = 'http://3.110.155.176:9000'
-        SONAR_AUTH_TOKEN = credentials('sonarqube-token-id')
+        SONAR_AUTH_TOKEN = credentials('sonarqube-token-id') // Ensure this is set in Jenkins credentials
     }
 
     stages {
@@ -20,8 +20,9 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'master',
-                    url:'https://github.com/veda-jpg/java-hello-world-with-maven.git'
+                git branch: 'master', 
+                    url: 'https://github.com/veda-jpg/java-hello-world-with-maven.git',
+                    credentialsId: 'github access' // GitHub credentials ID
             }
         }
 
@@ -33,22 +34,39 @@ pipeline {
 
         stage('Sonar Quality Check') {
             steps {
-                withSonarQubeEnv('SonarQube') { // SonarQube server name in Jenkins
-                    sh 'mvn sonar:sonar -Dsonar.projectKey=java-hello-world-with-maven'
+                withSonarQubeEnv('SonarQube') { // Ensure 'SonarQube' is configured in Jenkins
+                    sh '''
+                    mvn sonar:sonar \
+                      -Dsonar.projectKey=java-hello-world-with-maven \
+                      -Dsonar.host.url=$SONAR_HOST_URL \
+                      -Dsonar.login=$SONAR_AUTH_TOKEN
+                    '''
                 }
             }
         }
 
         stage('Push Artifacts to Nexus') {
             steps {
-                sh 'echo pushtonexus'
+                echo 'Push to Nexus repository'
+                // Replace this with Nexus deployment logic, e.g., using Maven deploy plugin:
+                // sh 'mvn deploy -DaltDeploymentRepository=nexus::default::http://<nexus-url>/repository/maven-releases/'
             }
         }
 
         stage('Deploy to Dev Environment') {
             steps {
-                sh 'echo deploytodev'
+                echo 'Deploying to development environment'
+                // Add deployment logic here, e.g., SSH to the target server or use Ansible scripts
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
