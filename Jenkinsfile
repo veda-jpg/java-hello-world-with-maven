@@ -20,8 +20,8 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'master'
-                    url: 'https://github.com/veda-jpg/java-hello-world-with-maven.git'
+                git branch: 'master',
+                    url:'https://github.com/veda-jpg/java-hello-world-with-maven.git'
             }
         }
 
