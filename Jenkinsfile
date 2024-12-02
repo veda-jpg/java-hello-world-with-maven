@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        SONAR_HOST_URL = 'http://4.240.103.236/:9000'
+        SONAR_HOST_URL = 'http://4.240.103.236:9000'
         SONAR_AUTH_TOKEN = credentials('sonor-token') // Ensure this is set in Jenkins credentials
     }
 
