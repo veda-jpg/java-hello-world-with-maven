@@ -7,14 +7,14 @@ pipeline {
     }
 
     environment {
-        SONAR_HOST_URL = 'http://4.240.103.236:9000'
-        SONAR_AUTH_TOKEN = credentials('sonor-token') // Ensure this is set in Jenkins credentials
+        SONAR_HOST_URL = 'http://4.240.103.236:9000' // Verify this is the correct SonarQube URL
+        SONAR_AUTH_TOKEN = credentials('sonor-token') // Ensure 'sonor-token' exists in Jenkins credentials
     }
 
     stages {
         stage('Clean Workspace') {
             steps {
-                cleanWs()
+                cleanWs() // Cleans the workspace
             }
         }
 
@@ -27,13 +27,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn package'
+                sh 'mvn clean package' // Clean and build
             }
         }
 
         stage('Sonar Quality Check') {
             steps {
-                withSonarQubeEnv('SonarQube') { // Ensure 'SonarQube' is configured in Jenkins
+                withSonarQubeEnv('SonarQube') { // Ensure 'SonarQube' matches the configuration in Jenkins
                     sh '''
                     mvn sonar:sonar \
                       -Dsonar.projectKey=java-hello-world-with-maven \
@@ -47,15 +47,14 @@ pipeline {
         stage('Push Artifacts to Nexus') {
             steps {
                 echo 'Push to Nexus repository'
-                // Replace this with Nexus deployment logic, e.g., using Maven deploy plugin:
-                // sh 'mvn deploy -DaltDeploymentRepository=nexus::default::http://<nexus-url>/repository/maven-releases/'
+                // Add Maven deploy logic or Nexus REST API script
             }
         }
 
         stage('Deploy to Dev Environment') {
             steps {
                 echo 'Deploying to development environment'
-                // Add deployment logic here, e.g., SSH to the target server or use Ansible scripts
+                // Add deployment logic here
             }
         }
     }
