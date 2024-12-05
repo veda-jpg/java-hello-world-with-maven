@@ -9,6 +9,9 @@ pipeline {
     environment {
         SONAR_HOST_URL = 'http://13.235.76.15:9000' // Verify this is the correct SonarQube URL
         SONAR_AUTH_TOKEN = credentials('sonor_token_id') // Ensure 'sonor-token' exists in Jenkins credentials
+        DOCKER_REGISTRY = 'https://hub.docker.com' // Replace with your Docker registry URL
+        DOCKER_CREDENTIALS_ID = 'docker-credentials-id' // Jenkins credentials ID for Docker
+        IMAGE_NAME = 'java-hello-world' // Docker image name
     }
 
     stages {
@@ -48,6 +51,17 @@ pipeline {
             steps {
                 echo 'Push to Nexus repository'
                 // Add Maven deploy logic or Nexus REST API script
+            }
+        }
+
+        stage('Docker Build and Push') {
+            steps {
+                script {
+                    docker.withRegistry("https://$DOCKER_REGISTRY", "$DOCKER_CREDENTIALS_ID") {
+                        def appImage = docker.build("$IMAGE_NAME:${env.BUILD_NUMBER}")
+                        appImage.push()
+                    }
+                }
             }
         }
 
