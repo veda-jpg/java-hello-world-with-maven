@@ -2,21 +2,19 @@ pipeline {
     agent any
 
     tools {
-        maven 'maven39'
-        jdk 'java17'
+        maven 'maven39' // Ensure Maven 3.9 is configured in Jenkins
+        jdk 'java17'    // Ensure Java 17 is configured in Jenkins
     }
 
     environment {
-        SONAR_HOST_URL = 'http://4.240.103.236:9000'
-        SONAR_AUTH_TOKEN = credentials('sonor-token')
-        NEXUS_URL = 'http://4.240.103.236:8081/repository/maven-releases/'
-        NEXUS_CREDENTIALS = credentials('nexus-credentials')
+        SONAR_HOST_URL = 'http://15.206.163.84:9000' // Verify this is the correct SonarQube URL
+        SONAR_AUTH_TOKEN = credentials('sonor-token') // Ensure 'sonor-token' exists in Jenkins credentials
     }
 
     stages {
         stage('Clean Workspace') {
             steps {
-                cleanWs()
+                cleanWs() // Cleans the workspace
             }
         }
 
@@ -29,13 +27,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean package' // Clean and build
             }
         }
 
         stage('Sonar Quality Check') {
             steps {
-                withSonarQubeEnv('SonarQube') {
+                withSonarQubeEnv('SonarQube') { // Ensure 'SonarQube' matches the configuration in Jenkins
                     sh '''
                     mvn sonar:sonar \
                       -Dsonar.projectKey=java-hello-world-with-maven \
@@ -48,20 +46,15 @@ pipeline {
 
         stage('Push Artifacts to Nexus') {
             steps {
-                sh '''
-                mvn deploy \
-                  -DaltDeploymentRepository=nexus::default::${NEXUS_URL} \
-                  -DrepositoryId=nexus \
-                  -Durl=${NEXUS_URL} \
-                  -Dnexus.username=${NEXUS_CREDENTIALS_USR} \
-                  -Dnexus.password=${NEXUS_CREDENTIALS_PSW}
-                '''
+                echo 'Push to Nexus repository'
+                // Add Maven deploy logic or Nexus REST API script
             }
         }
 
         stage('Deploy to Dev Environment') {
             steps {
                 echo 'Deploying to development environment'
+                // Add deployment logic here
             }
         }
     }

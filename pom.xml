@@ -1,70 +1,73 @@
-pipeline {
-    agent any
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-    tools {
-        maven 'maven39' // Ensure Maven 3.9 is configured in Jenkins
-        jdk 'java17'    // Ensure Java 17 is configured in Jenkins
-    }
+    <groupId>com.veda</groupId>
+    <artifactId>java-hello-world-with-maven</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-    environment {
-        SONAR_HOST_URL = 'http://15.206.163.84:9000' // Verify this is the correct SonarQube URL
-        SONAR_AUTH_TOKEN = credentials('sonor-token') // Ensure 'sonor-token' exists in Jenkins credentials
-    }
+    <name>java-hello-world-with-maven</name>
+    <description>A simple Java hello world project using Maven</description>
 
-    stages {
-        stage('Clean Workspace') {
-            steps {
-                cleanWs() // Cleans the workspace
-            }
-        }
+    <dependencies>
+        <!-- Add your dependencies here -->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
+        </dependency>
+    </dependencies>
 
-        stage('Checkout Code') {
-            steps {
-                git branch: 'master', 
-                    url: 'https://github.com/veda-jpg/java-hello-world-with-maven.git'
-            }
-        }
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-        stage('Build') {
-            steps {
-                sh 'mvn clean package' // Clean and build
-            }
-        }
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>Nexus Release Repository</name>
+            <url>https://your-nexus-repository-url/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>https://your-nexus-repository-url/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
-        stage('Sonar Quality Check') {
-            steps {
-                withSonarQubeEnv('SonarQube') { // Ensure 'SonarQube' matches the configuration in Jenkins
-                    sh '''
-                    mvn sonar:sonar \
-                      -Dsonar.projectKey=java-hello-world-with-maven \
-                      -Dsonar.host.url=$SONAR_HOST_URL \
-                      -Dsonar.login=$SONAR_AUTH_TOKEN
-                    '''
-                }
-            }
-        }
+    <repositories>
+        <repository>
+            <id>nexus-releases</id>
+            <url>https://your-nexus-repository-url/repository/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>nexus-snapshots</id>
+            <url>https://your-nexus-repository-url/repository/maven-snapshots/</url>
+        </repository>
+    </repositories>
 
-        stage('Push Artifacts to Nexus') {
-            steps {
-                echo 'Push to Nexus repository'
-                // Add Maven deploy logic or Nexus REST API script
-            }
-        }
+    <pluginRepositories>
+        <pluginRepository>
+            <id>nexus-releases</id>
+            <url>https://your-nexus-repository-url/repository/maven-releases/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>nexus-snapshots</id>
+            <url>https://your-nexus-repository-url/repository/maven-snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
-        stage('Deploy to Dev Environment') {
-            steps {
-                echo 'Deploying to development environment'
-                // Add deployment logic here
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline completed successfully.'
-        }
-        failure {
-            echo 'Pipeline failed!'
-        }
-    }
-}
+</project>
