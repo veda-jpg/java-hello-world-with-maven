@@ -8,7 +8,7 @@ pipeline {
 
     environment {
         SONAR_HOST_URL = 'http://15.206.163.84:9000' // Verify this is the correct SonarQube URL
-        SONAR_AUTH_TOKEN = credentials('sonor-token') // Ensure 'sonor-token' exists in Jenkins credentials
+        SONAR_AUTH_TOKEN = credentials('sonor_token_id') // Ensure 'sonor-token' exists in Jenkins credentials
     }
 
     stages {
