@@ -1,0 +1,14 @@
+# Use a base image with JDK 17
+FROM openjdk:17-jdk-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the JAR file from the build context
+COPY target/*.jar java-hello-world-with-maven-1.0-SNAPSHOT.jar
+
+# Expose the application's default port (e.g., 8080)
+EXPOSE 8080
+
+# Command to run the application
+CMD ["java", "-jar", "java-hello-world-with-maven-1.0-SNAPSHOT.jar"]
