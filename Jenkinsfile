@@ -10,7 +10,7 @@ pipeline {
         SONAR_HOST_URL = 'http://13.235.76.15:9000' // Verify this is the correct SonarQube URL
         SONAR_AUTH_TOKEN = credentials('sonor_token_id') // Ensure 'sonor-token' exists in Jenkins credentials
         DOCKER_REGISTRY = 'https://index.docker.io/v1/' // Replace with your Docker registry URL
-        DOCKER_CREDENTIALS_ID = 'docker-credentials-id' // Jenkins credentials ID for Docker
+        DOCKER_CREDENTIALS_ID = 'DOCKER_CREDENTIALS_ID' // Jenkins credentials ID for Docker
         IMAGE_NAME = 'java-hello-world' // Docker image name
     }
 
