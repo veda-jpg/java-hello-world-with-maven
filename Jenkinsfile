@@ -58,6 +58,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    echo "*****************************************************"
+                    sh "pwd"
                     sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
                 }
             }
