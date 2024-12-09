@@ -7,11 +7,12 @@ pipeline {
     }
 
     environment {
-        SONAR_HOST_URL = 'http://13.235.76.15:9000' // Verify this is the correct SonarQube URL
+        SONAR_HOST_URL = 'http://13.127.230.91:9000' // Verify this is the correct SonarQube URL
         SONAR_AUTH_TOKEN = credentials('sonor_token_id') // Ensure 'sonor-token' exists in Jenkins credentials
-        DOCKER_REGISTRY = 'https://index.docker.io/v1/' // Replace with your Docker registry URL
-        DOCKER_CREDENTIALS_ID = 'DOCKER_CREDENTIALS_ID' // Jenkins credentials ID for Docker
-        IMAGE_NAME = 'java-hello-world' // Docker image name
+        
+        DOCKER_HUB_CREDENTIALS = 'DOCKER_CREDENTIALS_ID' // Replace with your Jenkins credentials ID
+        DOCKER_IMAGE = 'vedalakshmi/java-hello-world' // Replace with your Docker Hub repository
+        DOCKER_TAG = 'latest' // Change the tag if needed
     }
 
     stages {
@@ -54,12 +55,23 @@ pipeline {
             }
         }
 
-        stage('Docker Build and Push') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    docker.withRegistry("https://index.docker.io/v1/", "DOCKER_CREDENTIALS_ID") {
-                        def appImage = docker.build("java-hello-world:${env.BUILD_NUMBER}")
-                         appImage.push()
+                    sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                }
+            }
+        }
+        
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDENTIALS}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh """
+                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+                        docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+                        docker logout
+                        """
                     }
                 }
             }
