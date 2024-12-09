@@ -60,6 +60,7 @@ pipeline {
                 script {
                     echo "*****************************************************"
                     sh "pwd"
+                    sh "ls -l" 
                     sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
                 }
             }
